@@ -125,8 +125,8 @@ The Zustand store manages:
 1. **Clone the repository**:
 
 ```bash
-git clone <repository-url>
-cd my-project
+git clone https://github.com/Nhatcapdang/crowdfunding
+cd crowdfunding
 ```
 
 2. **Install dependencies**:
