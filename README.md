@@ -1,6 +1,10 @@
 # Crowdfunding Campaign Platform
 
-The Explore page for Crowdfy, a crowdfunding platform
+**The Explore page for [Crowdfy](https://crowdfunding-green.vercel.app/explore)** - Browse campaigns, filter results, search, and view interactive maps.
+
+## 🌐 Live Demo
+
+**[View Live Application →](https://crowdfunding-green.vercel.app/explore)**
 
 ## 📋 Table of Contents
 

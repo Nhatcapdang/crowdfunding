@@ -28,7 +28,7 @@ export default function RootLayout({
       <body>
         <CounterStoreProvider>
           <QueryProvider>
-            <ThemeProvider>
+            <ThemeProvider defaultTheme="light">
               <MainLayout>{children}</MainLayout>
             </ThemeProvider>
           </QueryProvider>
