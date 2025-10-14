@@ -158,7 +158,7 @@ yarn start
 ## 📁 Project Structure
 
 ```
-my-project/
+crowdfunding/
 ├── public/                      # Static assets
 │   ├── images/                 # Image assets
 │   └── svgs/                   # SVG icons
