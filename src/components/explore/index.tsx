@@ -2,7 +2,7 @@
 import { useDebouncedCallback } from '@/hooks';
 import { useCampaignsStore } from '@/providers/campaigns-store-provider';
 import { LayoutGrid, MapPin, Newspaper, Search } from 'lucide-react';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import Gallery from './gallery';
 import {
   InputGroup,
@@ -23,15 +23,18 @@ function Explore() {
     }
   }, [_hasHydrated, search]);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.currentTarget.value;
-    setSearchInput(value);
-    handleSearch(value);
-  };
-
-  const handleSearch = useDebouncedCallback((query: string) => {
+  const debouncedSearch = useDebouncedCallback((query: string) => {
     setSearch(query);
   }, 300);
+
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const value = event.currentTarget.value;
+      setSearchInput(value);
+      debouncedSearch(value);
+    },
+    [setSearchInput, debouncedSearch]
+  );
 
   return (
     <div className="max-w-laptop mx-auto">

@@ -14,6 +14,7 @@ import {
   Share,
 } from 'lucide-react';
 import Image from 'next/image';
+import { memo, useCallback, useMemo } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
@@ -39,42 +40,96 @@ import GoogleMap from './google-map';
 import { isEqual } from 'lodash';
 
 export default function Gallery() {
-  const {
-    campaigns,
-    layoutView,
-    type,
-    priceSort,
-    dateSort,
-    currentPage,
-    isLoading,
-    canGoPrevious,
-    canGoNext,
-    pageNumbers,
-    setLayoutView,
-    setType,
-    setPriceSort,
-    setDateSort,
-    nextPage,
-    previousPage,
-    setCurrentPage,
-  } = useCampaignsStore(state => state);
+  const campaigns = useCampaignsStore(state => state.campaigns);
+  const layoutView = useCampaignsStore(state => state.layoutView);
+  const type = useCampaignsStore(state => state.type);
+  const priceSort = useCampaignsStore(state => state.priceSort);
+  const dateSort = useCampaignsStore(state => state.dateSort);
+  const currentPage = useCampaignsStore(state => state.currentPage);
+  const isLoading = useCampaignsStore(state => state.isLoading);
+  const canGoPrevious = useCampaignsStore(state => state.canGoPrevious);
+  const canGoNext = useCampaignsStore(state => state.canGoNext);
+  const pageNumbers = useCampaignsStore(state => state.pageNumbers);
+
+  const setLayoutView = useCampaignsStore(state => state.setLayoutView);
+  const setType = useCampaignsStore(state => state.setType);
+  const setPriceSort = useCampaignsStore(state => state.setPriceSort);
+  const setDateSort = useCampaignsStore(state => state.setDateSort);
+  const nextPage = useCampaignsStore(state => state.nextPage);
+  const previousPage = useCampaignsStore(state => state.previousPage);
+  const setCurrentPage = useCampaignsStore(state => state.setCurrentPage);
 
   // Fetch campaigns data and sync to store
   useCampaignsQuery();
 
-  console.table({
-    layoutView,
-    isEqual: isEqual(layoutView, ['list', 'map']),
-  });
+  const handlePriceSortChange = useCallback(
+    (value?: 'asc' | 'desc') => {
+      setPriceSort(value);
+    },
+    [setPriceSort]
+  );
+
+  const handleDateSortChange = useCallback(
+    (value?: 'asc' | 'desc') => {
+      setDateSort(value);
+    },
+    [setDateSort]
+  );
+
+  const handleTypeChange = useCallback(
+    (value: string) => {
+      if (!value) return;
+      setType(value as 'all-views' | CampaignType);
+    },
+    [setType]
+  );
+
+  const handleLayoutViewChange = useCallback(
+    (value: ('map' | 'list')[]) => {
+      setLayoutView(value);
+    },
+    [setLayoutView]
+  );
+
+  const handlePreviousPage = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      previousPage();
+    },
+    [previousPage]
+  );
+
+  const handleNextPage = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      nextPage();
+    },
+    [nextPage]
+  );
+
+  const handlePageClick = useCallback(
+    (pageNum: number) => (e: React.MouseEvent) => {
+      e.preventDefault();
+      setCurrentPage(pageNum);
+    },
+    [setCurrentPage]
+  );
+
+  const showMap = useMemo(() => layoutView.includes('map'), [layoutView]);
+  const showListView = useMemo(() => layoutView.includes('list'), [layoutView]);
+  const isListOnly = useMemo(() => isEqual(layoutView, ['list']), [layoutView]);
+  const isMapOnly = useMemo(() => isEqual(layoutView, ['map']), [layoutView]);
+  const isEmpty = useMemo(() => isEqual(layoutView, []), [layoutView]);
+  const isBothViews = useMemo(
+    () => layoutView.includes('list') && layoutView.includes('map'),
+    [layoutView]
+  );
+
   return (
     <div
       className={cn('mx-auto px-8 w-full flex flex-col gap-6', {
-        'max-w-xl':
-          isEqual(layoutView, ['list']) ||
-          isEqual(layoutView, ['map']) ||
-          isEqual(layoutView, []),
-        'max-w-tablet':
-          layoutView.includes('list') && layoutView.includes('map'),
+        'max-w-xl': isListOnly || isMapOnly || isEmpty,
+        'max-w-tablet': isBothViews,
       })}
     >
       <div />
@@ -92,13 +147,13 @@ export default function Gallery() {
                   label="Price"
                   sortKey="priceSort"
                   value={priceSort}
-                  onChange={value => setPriceSort(value)}
+                  onChange={handlePriceSortChange}
                 />
                 <CyclingSortButton
                   label="Date"
                   sortKey="dateSort"
                   value={dateSort}
-                  onChange={value => setDateSort(value)}
+                  onChange={handleDateSortChange}
                 />
               </CyclingSortGroup>
               <Button size="lg">
@@ -114,10 +169,7 @@ export default function Gallery() {
               variant="outline"
               defaultValue="all-views"
               value={type}
-              onValueChange={value => {
-                if (!value) return;
-                setType(value as 'all-views' | CampaignType);
-              }}
+              onValueChange={handleTypeChange}
             >
               <ToggleGroupItem value="all-views" aria-label="All views">
                 All views
@@ -136,9 +188,7 @@ export default function Gallery() {
               size="lg"
               variant="outline"
               value={layoutView}
-              onValueChange={(value: ('map' | 'list')[]) =>
-                setLayoutView(value)
-              }
+              onValueChange={handleLayoutViewChange}
             >
               <ToggleGroupItem value="list" aria-label="List view">
                 <List size={20} className="text-slate-500" />
@@ -150,26 +200,25 @@ export default function Gallery() {
           </div>
           <div
             className={cn('h-full overflow-y-auto', {
-              'overflow-y-auto h-[766px]':
-                layoutView.includes('list') || layoutView.includes('map'),
+              'overflow-y-auto h-[766px]': showListView || showMap,
             })}
           >
             <div
               className={cn({
-                'flex flex-wrap gap-[13px]': !layoutView.includes('list'),
-                'flex flex-col gap-4': layoutView.includes('list'),
+                'flex flex-wrap gap-[13px]': !showListView,
+                'flex flex-col gap-4': showListView,
               })}
             >
               {isLoading
                 ? Array.from({ length: 6 }).map((_, index) =>
-                    !layoutView.includes('list') ? (
+                    !showListView ? (
                       <SkeletonCard key={index} />
                     ) : (
                       <SkeletonCardList key={index} />
                     )
                   )
                 : campaigns.map((campaign: Campaign) =>
-                    !layoutView.includes('list') ? (
+                    !showListView ? (
                       <CardItem key={campaign.id} {...campaign} />
                     ) : (
                       <CardItemList key={campaign.id} {...campaign} />
@@ -183,10 +232,7 @@ export default function Gallery() {
                 'opacity-50 cursor-not-allowed': !canGoPrevious,
               })}
               href="#"
-              onClick={e => {
-                e.preventDefault();
-                previousPage();
-              }}
+              onClick={handlePreviousPage}
               aria-disabled={!canGoPrevious}
             />
             <PaginationContent className="text-gray-800">
@@ -198,10 +244,7 @@ export default function Gallery() {
                     ) : (
                       <PaginationLink
                         href="#"
-                        onClick={e => {
-                          e.preventDefault();
-                          setCurrentPage(pageNum);
-                        }}
+                        onClick={handlePageClick(pageNum)}
                         isActive={currentPage === pageNum}
                       >
                         {pageNum}
@@ -216,15 +259,12 @@ export default function Gallery() {
                 'opacity-50 cursor-not-allowed': !canGoNext,
               })}
               href="#"
-              onClick={e => {
-                e.preventDefault();
-                nextPage();
-              }}
+              onClick={handleNextPage}
               aria-disabled={!canGoNext}
             />
           </Pagination>
         </div>
-        {layoutView.includes('map') && (
+        {showMap && (
           <div className="flex-1">
             <GoogleMap />
           </div>
@@ -238,7 +278,7 @@ export default function Gallery() {
   );
 }
 
-const SkeletonCard = () => {
+const SkeletonCard = memo(() => {
   return (
     <Card className="w-full max-w-[396px] p-0 rounded-xl border-border overflow-hidden gap-0">
       <CardHeader className="relative h-[175px] w-full">
@@ -266,65 +306,64 @@ const SkeletonCard = () => {
       </CardContent>
     </Card>
   );
-};
+});
 
-const CardItem = ({
-  creator,
-  image,
-  description,
-  title,
-  amount,
-  percentage,
-}: Campaign) => {
-  return (
-    <Card className="w-full max-w-[396px] p-0 rounded-xl border-border overflow-hidden gap-0 ">
-      <CardHeader className="relative h-[175px]">
-        <Image src={image} alt="card-image" fill />
-        <div className="absolute bottom-0 right-0  p-2 flex gap-2">
-          <Button
-            variant="outline"
-            className="h-[42px] w-[42px] border-slate-200"
-          >
-            <Share className="text-black" size={16} />
-          </Button>
-          <Button
-            variant="outline"
-            className="h-[42px] w-[42px] border-slate-200"
-          >
-            <Heart className="text-black" size={16} />
-          </Button>
-        </div>
-      </CardHeader>
-      <CardContent className="p-4 pt-5 flex flex-col gap-4">
-        <div className="flex items-center gap-3">
-          <Avatar className="size-10">
-            <AvatarImage src={creator.avatar} alt="@shadcn" />
-            <AvatarFallback className="text-gray-600 font-medium">
-              {creator.name.charAt(0)}
-            </AvatarFallback>
-          </Avatar>
-          <span className="font-medium">{creator.name}</span>
-        </div>
-        <h3 className="text-gray-900 line-clamp-1">{title}</h3>
-        <p className="line-clamp-2">{description}</p>
-        <Progress value={percentage} className="w-full" />
-        <div className="flex justify-between font-medium">
-          <p className="flex items-center gap-0.5">
-            <Gift />
-            {amount.currency}
-            {formatNumber({
-              value: amount.raised,
-              digit: 2,
-            })}
-          </p>
-          <p className="text-slate-800">{percentage}%</p>
-        </div>
-      </CardContent>
-    </Card>
-  );
-};
+SkeletonCard.displayName = 'SkeletonCard';
 
-const SkeletonCardList = () => {
+const CardItem = memo(
+  ({ creator, image, description, title, amount, percentage }: Campaign) => {
+    return (
+      <Card className="w-full max-w-[396px] p-0 rounded-xl border-border overflow-hidden gap-0 ">
+        <CardHeader className="relative h-[175px]">
+          <Image src={image} alt="card-image" fill />
+          <div className="absolute bottom-0 right-0  p-2 flex gap-2">
+            <Button
+              variant="outline"
+              className="h-[42px] w-[42px] border-slate-200"
+            >
+              <Share className="text-black" size={16} />
+            </Button>
+            <Button
+              variant="outline"
+              className="h-[42px] w-[42px] border-slate-200"
+            >
+              <Heart className="text-black" size={16} />
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent className="p-4 pt-5 flex flex-col gap-4">
+          <div className="flex items-center gap-3">
+            <Avatar className="size-10">
+              <AvatarImage src={creator.avatar} alt="@shadcn" />
+              <AvatarFallback className="text-gray-600 font-medium">
+                {creator.name.charAt(0)}
+              </AvatarFallback>
+            </Avatar>
+            <span className="font-medium">{creator.name}</span>
+          </div>
+          <h3 className="text-gray-900 line-clamp-1">{title}</h3>
+          <p className="line-clamp-2">{description}</p>
+          <Progress value={percentage} className="w-full" />
+          <div className="flex justify-between font-medium">
+            <p className="flex items-center gap-0.5">
+              <Gift />
+              {amount.currency}
+              {formatNumber({
+                value: amount.raised,
+                digit: 2,
+              })}
+            </p>
+            <p className="text-slate-800">{percentage}%</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+);
+
+CardItem.displayName = 'CardItem';
+
+const SkeletonCardList = memo(() => {
   return (
     <Card className="w-full p-0 rounded-xl border-border overflow-hidden">
       <div className="flex gap-4 p-4">
@@ -352,71 +391,82 @@ const SkeletonCardList = () => {
       </div>
     </Card>
   );
-};
+});
 
-const CardItemList = ({
-  image,
-  description,
-  title,
-  amount,
-  location,
-  percentage,
-  isLiked,
-  id,
-}: Campaign) => {
-  const { toggleLike } = useCampaignsStore(state => state);
-  return (
-    <Card className="w-full p-4 rounded-xl border-border h-[250px] ">
-      <div className="flex gap-4 h-full relative">
-        <div className="absolute top-0 right-0">
-          <Button
-            variant="outline"
-            size="icon"
-            className={cn(
-              'h-10 w-10 border-slate-200 [&_svg]:text-black hover:bg-red-500 hover:[&_svg]:text-white',
-              {
-                'bg-red-500 [&_svg]:text-white': isLiked,
-              }
-            )}
-            onClick={() => toggleLike(id)}
-          >
-            <Heart size={16} />
-          </Button>
-        </div>
-        <div className="relative h-full aspect-square flex-shrink-0 rounded-lg overflow-hidden">
-          <Image src={image} alt="card-image" fill className="object-cover" />
-          <Badge
-            variant="custom"
-            className=" absolute bottom-2 left-2 gap-1 py-0.5 pl-1.5 pr-2 text-xs"
-          >
-            <BadgeCheckIcon size={12} />
-            Verified
-          </Badge>
-        </div>
-        <div className="flex-1 flex flex-col gap-4 ">
-          <div>
-            <p className="text-sm text-lime-600 font-semibold">Donations</p>
-            <h3 className="text-gray-900 text-lg font-semibold line-clamp-1">
-              {title}
-            </h3>
+SkeletonCardList.displayName = 'SkeletonCardList';
+
+const CardItemList = memo(
+  ({
+    image,
+    description,
+    title,
+    amount,
+    location,
+    percentage,
+    isLiked,
+    id,
+  }: Campaign) => {
+    const toggleLike = useCampaignsStore(state => state.toggleLike);
+
+    const handleToggleLike = useCallback(() => {
+      toggleLike(id);
+    }, [toggleLike, id]);
+
+    return (
+      <Card className="w-full p-4 rounded-xl border-border h-[250px] ">
+        <div className="flex gap-4 h-full relative">
+          <div className="absolute top-0 right-0">
+            <Button
+              variant="outline"
+              size="icon"
+              className={cn(
+                'h-10 w-10 border-slate-200 [&_svg]:text-black hover:bg-red-500 hover:[&_svg]:text-white',
+                {
+                  'bg-red-500 [&_svg]:text-white': isLiked,
+                }
+              )}
+              onClick={handleToggleLike}
+            >
+              <Heart size={16} />
+            </Button>
           </div>
-          <p className="line-clamp-2 text-gray-600 flex-1">{description}</p>
-          <div className="flex justify-between items-center h-6 ">
-            <div className="flex items-center gap-2 text-gray-400 font-medium">
-              <MapPin size={20} className="text-gray-400" />
-              <p>{location}</p>
+          <div className="relative h-full aspect-square flex-shrink-0 rounded-lg overflow-hidden">
+            <Image src={image} alt="card-image" fill className="object-cover" />
+            <Badge
+              variant="custom"
+              className=" absolute bottom-2 left-2 gap-1 py-0.5 pl-1.5 pr-2 text-xs"
+            >
+              <BadgeCheckIcon size={12} />
+              Verified
+            </Badge>
+          </div>
+          <div className="flex-1 flex flex-col gap-4 ">
+            <div>
+              <p className="text-sm text-lime-600 font-semibold">Donations</p>
+              <h3 className="text-gray-900 text-lg font-semibold line-clamp-1">
+                {title}
+              </h3>
             </div>
-            <p className="text-gray-900 font-semibold text-xl">
-              {amount.currency}
-              {formatNumber({
-                value: amount.raised,
-                digit: 2,
-              })}
-            </p>
+            <p className="line-clamp-2 text-gray-600 flex-1">{description}</p>
+            <div className="flex justify-between items-center h-6 ">
+              <div className="flex items-center gap-2 text-gray-400 font-medium">
+                <MapPin size={20} className="text-gray-400" />
+                <p>{location}</p>
+              </div>
+              <p className="text-gray-900 font-semibold text-xl">
+                {amount.currency}
+                {formatNumber({
+                  value: amount.raised,
+                  digit: 2,
+                })}
+              </p>
+            </div>
+            <Progress value={percentage} className="w-full" />
           </div>
-          <Progress value={percentage} className="w-full" />
         </div>
-      </div>
-    </Card>
-  );
-};
+      </Card>
+    );
+  }
+);
+
+CardItemList.displayName = 'CardItemList';
