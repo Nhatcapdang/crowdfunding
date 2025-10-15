@@ -509,7 +509,7 @@ const CardItemList = memo(
             <p className="line-clamp-2 text-xs sm:text-sm text-gray-600 flex-1">
               {description}
             </p>
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0">
+            <div className=" flex justify-between items-center gap-2 sm:gap-0">
               <div className="flex items-center gap-1.5 sm:gap-2 text-gray-400 font-medium text-xs sm:text-sm">
                 <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
                 <p>{location}</p>
