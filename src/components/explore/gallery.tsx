@@ -311,7 +311,22 @@ const SkeletonCard = memo(() => {
 SkeletonCard.displayName = 'SkeletonCard';
 
 const CardItem = memo(
-  ({ creator, image, description, title, amount, percentage }: Campaign) => {
+  ({
+    creator,
+    image,
+    description,
+    title,
+    amount,
+    percentage,
+    id,
+    isLiked,
+  }: Campaign) => {
+    const toggleLike = useCampaignsStore(state => state.toggleLike);
+
+    const handleToggleLike = useCallback(() => {
+      toggleLike(id);
+    }, [toggleLike, id]);
+
     return (
       <Card className="w-full max-w-[396px] p-0 rounded-xl border-border overflow-hidden gap-0 ">
         <CardHeader className="relative h-[175px]">
@@ -325,9 +340,15 @@ const CardItem = memo(
             </Button>
             <Button
               variant="outline"
-              className="h-[42px] w-[42px] border-slate-200"
+              className={cn(
+                'h-[42px] w-[42px] border-slate-200  hover:bg-red-500/25 hover:[&_svg]:text-white',
+                {
+                  'bg-red-500 [&_svg]:text-white': isLiked,
+                }
+              )}
+              onClick={handleToggleLike}
             >
-              <Heart className="text-black" size={16} />
+              <Heart size={16} />
             </Button>
           </div>
         </CardHeader>
@@ -420,7 +441,7 @@ const CardItemList = memo(
               variant="outline"
               size="icon"
               className={cn(
-                'h-10 w-10 border-slate-200 [&_svg]:text-black hover:bg-red-500 hover:[&_svg]:text-white',
+                'h-10 w-10 border-slate-200 [&_svg]:text-black hover:bg-red-500/25 hover:[&_svg]:text-white',
                 {
                   'bg-red-500 [&_svg]:text-white': isLiked,
                 }
