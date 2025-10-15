@@ -138,7 +138,7 @@ export default function GoogleMap() {
   };
 
   return (
-    <div className="relative h-full min-h-[400px] sm:min-h-[500px] lg:min-h-[600px]">
+    <div className="relative h-full max-lg:h-[500px]">
       <div className="h-full w-full rounded-lg overflow-hidden border border-gray-200">
         <GoogleMapReact
           bootstrapURLKeys={{
