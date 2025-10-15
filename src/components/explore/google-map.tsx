@@ -38,40 +38,42 @@ interface CampaignPopupProps {
 
 function CampaignPopup({ campaign, onClose }: CampaignPopupProps) {
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <Card className="max-w-md w-full">
-        <CardContent className="p-6">
-          <div className="flex items-start gap-4">
-            <Avatar className="w-12 h-12">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-3 sm:p-4">
+      <Card className="max-w-sm sm:max-w-md w-full max-h-[90vh] overflow-y-auto">
+        <CardContent className="p-4 sm:p-6">
+          <div className="flex items-start gap-3 sm:gap-4">
+            <Avatar className="w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0">
               <AvatarImage src={campaign.creator.avatar} />
-              <AvatarFallback>{campaign.creator.name[0]}</AvatarFallback>
+              <AvatarFallback className="text-xs sm:text-sm">
+                {campaign.creator.name[0]}
+              </AvatarFallback>
             </Avatar>
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-2">
-                <h3 className="font-semibold text-sm">
+                <h3 className="font-semibold text-xs sm:text-sm truncate">
                   {campaign.creator.name}
                 </h3>
                 {campaign.creator.verified && (
-                  <Badge variant="secondary" className="text-xs">
+                  <Badge variant="secondary" className="text-xs flex-shrink-0">
                     Verified
                   </Badge>
                 )}
               </div>
-              <h2 className="font-bold text-lg mb-2 line-clamp-2">
+              <h2 className="font-bold text-base sm:text-lg mb-2 line-clamp-2">
                 {campaign.title}
               </h2>
-              <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
+              <p className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4 line-clamp-3">
                 {campaign.description}
               </p>
-              <div className="flex items-center justify-between">
-                <div className="text-sm">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0">
+                <div className="text-xs sm:text-sm">
                   <span className="font-semibold text-primary">
                     {campaign.amount.currency}
                     {formatNumber({ value: campaign.amount.raised, digit: 0 })}
                   </span>
                   <span className="text-muted-foreground"> raised</span>
                 </div>
-                <div className="text-sm text-muted-foreground">
+                <div className="text-xs sm:text-sm text-muted-foreground">
                   📍 {campaign.location}
                 </div>
               </div>
@@ -79,7 +81,7 @@ function CampaignPopup({ campaign, onClose }: CampaignPopupProps) {
           </div>
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"
+            className="absolute top-3 right-3 sm:top-4 sm:right-4 text-muted-foreground hover:text-foreground text-lg sm:text-xl"
           >
             ✕
           </button>
@@ -136,7 +138,7 @@ export default function GoogleMap() {
   };
 
   return (
-    <div className="relative h-full max-lg:h-[500px]">
+    <div className="relative h-full min-h-[400px] sm:min-h-[500px] lg:min-h-[600px]">
       <div className="h-full w-full rounded-lg overflow-hidden border border-gray-200">
         <GoogleMapReact
           bootstrapURLKeys={{
@@ -178,19 +180,20 @@ export default function GoogleMap() {
       </div>
 
       {/* Campaign count indicator */}
-      <div className="absolute top-4 left-4 bg-white rounded-lg shadow-md px-3 py-2">
-        <span className="text-sm font-medium">
+      <div className="absolute top-2 left-2 sm:top-4 sm:left-4 bg-white rounded-lg shadow-md px-2 py-1.5 sm:px-3 sm:py-2">
+        <span className="text-xs sm:text-sm font-medium">
           {campaignsWithCoords.length} campaigns
         </span>
       </div>
 
       {/* Map legend */}
-      <div className="absolute bottom-4 left-4 bg-white rounded-lg shadow-md p-3">
-        <div className="flex items-center gap-2 text-sm">
-          <div className="bg-primary rounded-full p-1">
-            <MapPin size={12} className="text-primary-foreground" />
+      <div className="absolute bottom-2 left-2 sm:bottom-4 sm:left-4 bg-white rounded-lg shadow-md p-2 sm:p-3">
+        <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm">
+          <div className="bg-primary rounded-full p-0.5 sm:p-1">
+            <MapPin className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-primary-foreground" />
           </div>
-          <span>Campaign Location</span>
+          <span className="hidden sm:inline">Campaign Location</span>
+          <span className="sm:hidden">Campaigns</span>
         </div>
       </div>
 

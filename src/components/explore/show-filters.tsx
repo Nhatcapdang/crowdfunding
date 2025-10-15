@@ -67,20 +67,21 @@ export default function ShowFilters() {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button size="lg">
-          <ListFilter size={16} />
-          Show filters
+        <Button size="lg" className="w-full sm:w-auto">
+          <ListFilter className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+          <span className="hidden sm:inline">Show filters</span>
+          <span className="sm:hidden">Filters</span>
         </Button>
       </SheetTrigger>
-      <SheetContent className="p-4">
+      <SheetContent className="p-4 w-full sm:w-[400px]">
         <SheetHeader className="p-0">
-          <SheetTitle>Filters</SheetTitle>
-          <SheetDescription>
+          <SheetTitle className="text-lg sm:text-xl">Filters</SheetTitle>
+          <SheetDescription className="text-sm sm:text-base">
             Customize your campaign search with sorting options.
           </SheetDescription>
         </SheetHeader>
 
-        <div className="grid gap-6 py-6">
+        <div className="grid gap-4 sm:gap-6 py-4 sm:py-6">
           <div className="space-y-2">
             <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
               Sort by Price
@@ -89,7 +90,7 @@ export default function ShowFilters() {
               value={getPriceSortValue()}
               onValueChange={handlePriceSortChange}
             >
-              <SelectTrigger className="w-full">
+              <SelectTrigger className="w-full h-10 sm:h-11">
                 <SelectValue placeholder="Select price sort" />
               </SelectTrigger>
               <SelectContent>
@@ -108,7 +109,7 @@ export default function ShowFilters() {
               value={getDateSortValue()}
               onValueChange={handleDateSortChange}
             >
-              <SelectTrigger className="w-full">
+              <SelectTrigger className="w-full h-10 sm:h-11">
                 <SelectValue placeholder="Select date sort" />
               </SelectTrigger>
               <SelectContent>
@@ -117,21 +118,24 @@ export default function ShowFilters() {
                 <SelectItem value="desc">Date: Newest First</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+
+          <div className="flex flex-col gap-2 sm:gap-3 pt-2">
             <Button
               variant="outline"
               size="lg"
-              className="w-full"
+              className="w-full h-10 sm:h-11"
               onClick={handleApplyFilters}
             >
-              Apply
+              Apply Filters
             </Button>
             <Button
               variant="ghost"
               size="lg"
-              className="w-full"
+              className="w-full h-10 sm:h-11"
               onClick={handleResetFilters}
             >
-              Reset
+              Reset All
             </Button>
           </div>
         </div>
