@@ -8,8 +8,10 @@ export type CampaignsState = {
   search: string;
   type: 'all-views' | CampaignType;
   layoutView: ('map' | 'list')[];
-  priceSort?: 'asc' | 'desc';
-  dateSort?: 'asc' | 'desc';
+  filters: {
+    priceSort?: 'asc' | 'desc';
+    dateSort?: 'asc' | 'desc';
+  };
   _hasHydrated: boolean;
   // Pagination state
   currentPage: number;
@@ -29,8 +31,10 @@ export type CampaignsActions = {
   setSearch: (search: string) => void;
   setLayoutView: (layoutView: ('map' | 'list')[]) => void;
   setType: (type: 'all-views' | CampaignType) => void;
-  setPriceSort: (priceSort?: 'asc' | 'desc') => void;
-  setDateSort: (dateSort?: 'asc' | 'desc') => void;
+  setFilters: (filters: {
+    priceSort?: 'asc' | 'desc';
+    dateSort?: 'asc' | 'desc';
+  }) => void;
   _setHasHydrated: (hasHydrated: boolean) => void;
   setCampaigns: (campaigns: Campaign[]) => void;
   // Pagination actions
@@ -58,6 +62,10 @@ export const initCampaignsStore = (): CampaignsState => {
     search: '',
     layoutView: [],
     type: 'all-views',
+    filters: {
+      priceSort: undefined,
+      dateSort: undefined,
+    },
     _hasHydrated: false,
     currentPage: 1,
     totalPages: 1,
@@ -78,6 +86,10 @@ export const defaultInitStateCampaigns: CampaignsState = {
   search: '',
   layoutView: [],
   type: 'all-views',
+  filters: {
+    priceSort: undefined,
+    dateSort: undefined,
+  },
   _hasHydrated: false,
   currentPage: 1,
   totalPages: 1,
@@ -107,10 +119,7 @@ export const createCampaignsStore = (
             };
           }),
         setType: type => set({ type, currentPage: 1 }), // Reset to page 1 on type change
-        setPriceSort: priceSort =>
-          set({ priceSort, dateSort: undefined, currentPage: 1 }),
-        setDateSort: dateSort =>
-          set({ dateSort, priceSort: undefined, currentPage: 1 }),
+        setFilters: filters => set({ filters, currentPage: 1 }),
         _setHasHydrated: _hasHydrated => set({ _hasHydrated }),
         setCampaigns: campaigns => set({ campaigns }),
         // Pagination actions
@@ -179,8 +188,7 @@ export const createCampaignsStore = (
         partialize: state =>
           pick(state, [
             'layoutView',
-            'priceSort',
-            'dateSort',
+            'filters',
             'type',
             'search',
             'pageSize',

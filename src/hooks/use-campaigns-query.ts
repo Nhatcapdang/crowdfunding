@@ -18,8 +18,7 @@ export function useCampaignsQuery({ location }: UseCampaignsQueryProps = {}) {
   const {
     search,
     type,
-    priceSort,
-    dateSort,
+    filters,
     currentPage,
     pageSize,
     setCampaigns,
@@ -47,8 +46,7 @@ export function useCampaignsQuery({ location }: UseCampaignsQueryProps = {}) {
       type,
       location,
       search,
-      priceSort,
-      dateSort,
+      filters,
       currentPage,
       pageSize,
     ],
@@ -60,8 +58,8 @@ export function useCampaignsQuery({ location }: UseCampaignsQueryProps = {}) {
           type: type === 'all-views' ? undefined : type,
           location,
           search: search === '' ? undefined : search,
-          priceSort,
-          dateSort,
+          priceSort: filters.priceSort,
+          dateSort: filters.dateSort,
         },
       });
       return res.data;

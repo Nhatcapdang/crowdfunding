@@ -8,7 +8,6 @@ import {
   Gift,
   Heart,
   List,
-  ListFilter,
   MapPin,
   PiggyBank,
   Share,
@@ -37,14 +36,15 @@ import {
   ToggleGroupItem,
 } from '../ui/toggle-group';
 import GoogleMap from './google-map';
+import ShowFilters from './show-filters';
 import { isEqual } from 'lodash';
 
 export default function Gallery() {
   const campaigns = useCampaignsStore(state => state.campaigns);
   const layoutView = useCampaignsStore(state => state.layoutView);
   const type = useCampaignsStore(state => state.type);
-  const priceSort = useCampaignsStore(state => state.priceSort);
-  const dateSort = useCampaignsStore(state => state.dateSort);
+  const setFilters = useCampaignsStore(state => state.setFilters);
+  const filters = useCampaignsStore(state => state.filters);
   const currentPage = useCampaignsStore(state => state.currentPage);
   const isLoading = useCampaignsStore(state => state.isLoading);
   const canGoPrevious = useCampaignsStore(state => state.canGoPrevious);
@@ -53,8 +53,6 @@ export default function Gallery() {
 
   const setLayoutView = useCampaignsStore(state => state.setLayoutView);
   const setType = useCampaignsStore(state => state.setType);
-  const setPriceSort = useCampaignsStore(state => state.setPriceSort);
-  const setDateSort = useCampaignsStore(state => state.setDateSort);
   const nextPage = useCampaignsStore(state => state.nextPage);
   const previousPage = useCampaignsStore(state => state.previousPage);
   const setCurrentPage = useCampaignsStore(state => state.setCurrentPage);
@@ -64,16 +62,16 @@ export default function Gallery() {
 
   const handlePriceSortChange = useCallback(
     (value?: 'asc' | 'desc') => {
-      setPriceSort(value);
+      setFilters({ priceSort: value });
     },
-    [setPriceSort]
+    [setFilters]
   );
 
   const handleDateSortChange = useCallback(
     (value?: 'asc' | 'desc') => {
-      setDateSort(value);
+      setFilters({ dateSort: value });
     },
-    [setDateSort]
+    [setFilters]
   );
 
   const handleTypeChange = useCallback(
@@ -146,20 +144,17 @@ export default function Gallery() {
                 <CyclingSortButton
                   label="Price"
                   sortKey="priceSort"
-                  value={priceSort}
+                  value={filters.priceSort}
                   onChange={handlePriceSortChange}
                 />
                 <CyclingSortButton
                   label="Date"
                   sortKey="dateSort"
-                  value={dateSort}
+                  value={filters.dateSort}
                   onChange={handleDateSortChange}
                 />
               </CyclingSortGroup>
-              <Button size="lg">
-                <ListFilter size={16} />
-                Show filters
-              </Button>
+              <ShowFilters />
             </div>
           </div>
           <div className="flex justify-between">
@@ -209,6 +204,11 @@ export default function Gallery() {
                 'flex flex-col gap-4': showListView,
               })}
             >
+              {campaigns.length === 0 && !isLoading && (
+                <div className="flex justify-center items-center h-full">
+                  <h3 className="text-gray-600">No campaigns found</h3>
+                </div>
+              )}
               {isLoading
                 ? Array.from({ length: 6 }).map((_, index) =>
                     !showListView ? (
