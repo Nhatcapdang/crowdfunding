@@ -28,7 +28,14 @@ export default function RootLayout({
       <body>
         <CounterStoreProvider>
           <QueryProvider>
-            <ThemeProvider defaultTheme="dark">{children}</ThemeProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              {children}
+            </ThemeProvider>
           </QueryProvider>
         </CounterStoreProvider>
       </body>
