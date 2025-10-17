@@ -3,7 +3,7 @@ import { NavMenu } from './nav-menu';
 import { NavigationSheet } from './navigation-sheet';
 import Image from 'next/image';
 
-const Navbar04Page = () => {
+const Navbar = () => {
   return (
     <div className="min-h-screen bg-muted">
       <nav className="fixed top-6 inset-x-4 h-16 bg-background border dark:border-slate-700/70 max-w-(--breakpoint-xl) mx-auto rounded-full">
@@ -38,4 +38,4 @@ const Navbar04Page = () => {
   );
 };
 
-export default Navbar04Page;
+export default Navbar;

@@ -1,3 +1,4 @@
+import { Footer, Navbar } from '@/components';
 import {
   CounterStoreProvider,
   QueryProvider,
@@ -34,7 +35,9 @@ export default function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
+              <Navbar />
               {children}
+              <Footer />
             </ThemeProvider>
           </QueryProvider>
         </CounterStoreProvider>

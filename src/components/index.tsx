@@ -9,8 +9,12 @@ const Explore = dynamic(() => import('./explore'), {
   loading: () => <Loading />,
 });
 
-const Header = dynamic(() => import('./header'), {
+const Footer = dynamic(() => import('./footer'), {
   loading: () => <Loading />,
 });
 
-export { SwitchDark, Explore, Header };
+const Navbar = dynamic(() => import('./navbar'), {
+  loading: () => <Loading />,
+});
+
+export { SwitchDark, Explore, Footer, Navbar };
