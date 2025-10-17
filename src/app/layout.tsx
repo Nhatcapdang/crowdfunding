@@ -1,16 +1,17 @@
+import { Footer, Navbar } from '@/components';
 import {
-  ThemeProvider,
   CounterStoreProvider,
   QueryProvider,
+  ThemeProvider,
 } from '@/providers';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Poppins } from 'next/font/google';
 import './globals.css';
-import { MainLayout } from '@/Layouts';
 
-const inter = Inter({
-  variable: '--font-inter',
+const poppins = Poppins({
   subsets: ['latin'],
+  weight: ['600'],
+  variable: '--display-family',
 });
 
 export const metadata: Metadata = {
@@ -24,12 +25,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${poppins.variable}`} suppressHydrationWarning>
       <body>
         <CounterStoreProvider>
           <QueryProvider>
-            <ThemeProvider defaultTheme="light">
-              <MainLayout>{children}</MainLayout>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <Navbar />
+              {children}
+              <Footer />
             </ThemeProvider>
           </QueryProvider>
         </CounterStoreProvider>
