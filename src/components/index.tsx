@@ -21,4 +21,8 @@ const Hero = dynamic(() => import('./hero'), {
   loading: () => <Loading />,
 });
 
-export { SwitchDark, Explore, Footer, Navbar, Hero };
+const Testimonial = dynamic(() => import('./testimonial'), {
+  loading: () => <Loading />,
+});
+
+export { SwitchDark, Explore, Footer, Navbar, Hero, Testimonial };
