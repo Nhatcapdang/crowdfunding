@@ -17,4 +17,8 @@ const Navbar = dynamic(() => import('./navbar'), {
   loading: () => <Loading />,
 });
 
-export { SwitchDark, Explore, Footer, Navbar };
+const Hero = dynamic(() => import('./hero'), {
+  loading: () => <Loading />,
+});
+
+export { SwitchDark, Explore, Footer, Navbar, Hero };

@@ -1,11 +1,9 @@
-import Link from 'next/link';
+import { Hero } from '@/components';
 
 export default function Home() {
   return (
-    <div>
-      <Link href="/explore">
-        <h1>Go to explore</h1>
-      </Link>
-    </div>
+    <main>
+      <Hero />
+    </main>
   );
 }
