@@ -222,3 +222,7 @@
 @utility animate-marquee-vertical {
   animation: marquee-vertical var(--duration) linear infinite;
 }
+
+.text-linear-gradient {
+  @apply bg-gradient-to-r from-primary via-chart-2 to-chart-1 bg-clip-text text-transparent;
+}

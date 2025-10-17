@@ -25,4 +25,8 @@ const Testimonial = dynamic(() => import('./testimonial'), {
   loading: () => <Loading />,
 });
 
-export { SwitchDark, Explore, Footer, Navbar, Hero, Testimonial };
+const Integration = dynamic(() => import('./integration'), {
+  loading: () => <Loading />,
+});
+
+export { SwitchDark, Explore, Footer, Navbar, Hero, Testimonial, Integration };

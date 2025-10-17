@@ -91,10 +91,7 @@ const Hero = React.memo(() => {
               className="font-display text-4xl font-bold leading-tight tracking-tight md:text-5xl lg:text-6xl xl:text-7xl"
             >
               Launch Your{' '}
-              <span className="bg-gradient-to-r from-primary via-chart-2 to-chart-1 bg-clip-text text-transparent">
-                Meme Coin
-              </span>{' '}
-              on Solana
+              <span className="text-linear-gradient">Meme Coin</span> on Solana
             </h1>
 
             {/* Subheading */}

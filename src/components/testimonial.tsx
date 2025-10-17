@@ -100,11 +100,8 @@ const Testimonial = React.memo(() => {
             id="testimonials-heading"
             className="font-display text-3xl font-bold leading-tight tracking-tight md:text-4xl lg:text-5xl"
           >
-            What{' '}
-            <span className="bg-gradient-to-r from-primary via-chart-2 to-chart-1 bg-clip-text text-transparent">
-              Creators
-            </span>{' '}
-            Are Saying
+            What <span className="text-linear-gradient">Creators</span> Are
+            Saying
           </h2>
           <p className="mt-4 text-base text-muted-foreground md:text-lg lg:text-xl">
             Real feedback from meme coin creators on X
@@ -113,13 +110,13 @@ const Testimonial = React.memo(() => {
 
         {/* Testimonials Marquee */}
         <div
-          className="relative mt-12 lg:mt-16"
+          className="relative mt-12 lg:mt-16 rounded-lg overflow-hidden"
           role="list"
           aria-label="User testimonials"
         >
           {/* Fade edges */}
-          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-[10%] bg-gradient-to-r from-background to-transparent" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-[10%] bg-gradient-to-l from-background to-transparent" />
+          {/* <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-[10%] bg-gradient-to-r from-background to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-[10%] bg-gradient-to-l from-background to-transparent" /> */}
 
           {/* First row - scrolling left to right */}
           <Marquee pauseOnHover className="[--duration:30s] [--gap:1.5rem]">
